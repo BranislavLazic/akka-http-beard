@@ -9,6 +9,8 @@ lazy val `akka-http-beard` =
     .settings(settings)
     .settings(
       libraryDependencies ++= Seq(
+        library.akkaHttp,
+        library.beard,
         library.scalaCheck % Test,
         library.scalaTest  % Test
       )
@@ -21,11 +23,16 @@ lazy val `akka-http-beard` =
 lazy val library =
   new {
     object Version {
+      val akkaHttp   = "10.0.3"
+      val beard      = "0.2.0"
       val scalaCheck = "1.13.4"
       val scalaTest  = "3.0.1"
+
     }
-    val scalaCheck = "org.scalacheck" %% "scalacheck" % Version.scalaCheck
-    val scalaTest  = "org.scalatest"  %% "scalatest"  % Version.scalaTest
+    val beard      = "de.zalando"        %% "beard"      % Version.beard
+    val akkaHttp   = "com.typesafe.akka" %% "akka-http"  % Version.akkaHttp
+    val scalaCheck = "org.scalacheck"    %% "scalacheck" % Version.scalaCheck
+    val scalaTest  = "org.scalatest"     %% "scalatest"  % Version.scalaTest
   }
 
 // *****************************************************************************
@@ -42,7 +49,7 @@ lazy val commonSettings =
     // scalaVersion and crossScalaVersions from .travis.yml via sbt-travisci
     // scalaVersion := "2.12.1",
     // crossScalaVersions := Seq(scalaVersion.value, "2.11.8"),
-    organization := "ba.codecentric",
+    organization := "org.akkahttpbeard",
     licenses += ("Apache 2.0",
                  url("http://www.apache.org/licenses/LICENSE-2.0")),
     mappings.in(Compile, packageBin) += baseDirectory.in(ThisBuild).value / "LICENSE" -> "LICENSE",
@@ -72,3 +79,7 @@ lazy val headerSettings =
   Seq(
     headers := Map("scala" -> Apache2_0("2017", "Branislav Lazic"))
   )
+
+resolvers ++= Seq(
+  "zalando-maven" at "https://dl.bintray.com/zalando/maven"
+)

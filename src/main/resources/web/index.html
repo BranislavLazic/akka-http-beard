@@ -1,0 +1,20 @@
+<html>
+  <head>
+      <title>{{title}}</title>
+  </head>
+  <body>
+  <h2>{{title}}</h2>
+    <table>
+        <tr>
+            <th>First name</th>
+            <th>Last name</th>
+        </tr>
+        {{for president in presidents}}
+        <tr>
+            <td>{{president.firstName}}</td>
+            <td>{{president.lastName}}</td>
+        </tr>
+        {{/for}}
+    </table>
+  </body>
+</html>
