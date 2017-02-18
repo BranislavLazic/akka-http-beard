@@ -11,6 +11,7 @@ lazy val `akka-http-beard` =
       libraryDependencies ++= Seq(
         library.akkaHttp,
         library.beard,
+        library.akkaHttpTestkit % Test,
         library.scalaCheck % Test,
         library.scalaTest  % Test
       )
@@ -29,10 +30,11 @@ lazy val library =
       val scalaTest  = "3.0.1"
 
     }
-    val beard      = "de.zalando"        %% "beard"      % Version.beard
-    val akkaHttp   = "com.typesafe.akka" %% "akka-http"  % Version.akkaHttp
-    val scalaCheck = "org.scalacheck"    %% "scalacheck" % Version.scalaCheck
-    val scalaTest  = "org.scalatest"     %% "scalatest"  % Version.scalaTest
+    val beard           = "de.zalando"        %% "beard"             % Version.beard
+    val akkaHttp        = "com.typesafe.akka" %% "akka-http"         % Version.akkaHttp
+    val akkaHttpTestkit = "com.typesafe.akka" %% "akka-http-testkit" % Version.akkaHttp
+    val scalaCheck      = "org.scalacheck"    %% "scalacheck"        % Version.scalaCheck
+    val scalaTest       = "org.scalatest"     %% "scalatest"         % Version.scalaTest
   }
 
 // *****************************************************************************
