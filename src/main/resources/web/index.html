@@ -1,20 +1,31 @@
 <html>
-  <head>
-      <title>{{title}}</title>
-  </head>
-  <body>
-  <h2>{{title}}</h2>
-    <table>
+<head>
+    <title>{{title}}</title>
+    <link href="css/bootstrap.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="container">
+    <h2 class="text-center">{{title}}</h2>
+    <table class="table table-striped">
+        <thead>
         <tr>
+            <th>#</th>
             <th>First name</th>
             <th>Last name</th>
         </tr>
+        </thead>
+        <tbody>
         {{for president in presidents}}
         <tr>
+            <th>{{president.number}}</th>
             <td>{{president.firstName}}</td>
             <td>{{president.lastName}}</td>
         </tr>
         {{/for}}
+        </tbody>
     </table>
-  </body>
+</div>
+<script src="js/jquery.js"></script>
+<script src="js/bootstrap.js"></script>
+</body>
 </html>

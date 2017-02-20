@@ -16,10 +16,10 @@
 
 package org.akkahttpbeard
 
-import akka.actor.{ Actor, ActorLogging, Props }
+import akka.actor.{Actor, ActorLogging, Props}
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.Http.ServerBinding
-import akka.http.scaladsl.model.{ ContentType, HttpEntity }
+import akka.http.scaladsl.model.{ContentType, HttpEntity}
 import akka.http.scaladsl.model.HttpCharsets.`UTF-8`
 import akka.http.scaladsl.server.Route
 import akka.pattern.pipe
@@ -27,39 +27,41 @@ import akka.stream.ActorMaterializer
 import de.zalando.beard.renderer._
 import akka.http.scaladsl.model.MediaTypes.`text/html`
 import akka.http.scaladsl.server.Directives._
+import scala.util.Failure
 
 object HttpService {
 
   final val Name = "http-service"
   final case class President(firstName: String, lastName: String)
 
-  val loader = new ClasspathTemplateLoader(
+  val templateLoader = new ClasspathTemplateLoader(
     templatePrefix = "/web/",
     templateSuffix = ".html"
   )
-  val templateCompiler = new CustomizableTemplateCompiler(templateLoader = loader)
-  val renderer         = new BeardTemplateRenderer(templateCompiler)
+  val templateCompiler = new CustomizableTemplateCompiler(templateLoader = templateLoader)
+  val templateRenderer = new BeardTemplateRenderer(templateCompiler)
 
-  def getRenderedResult(templateName: String, context: Map[String, Any]): Route = {
+  def renderPage(templateName: String, context: Map[String, Any]): Route = {
     val template = templateCompiler.compile(TemplateName(templateName)).get
-    val result   = renderer.render(template, StringWriterRenderResult(), context, Some(template))
+    val result =
+      templateRenderer.render(template, StringWriterRenderResult(), context, Some(template))
     complete(HttpEntity(ContentType(`text/html`, `UTF-8`), result.toString))
   }
 
   def route: Route =
-    pathSingleSlash {
+    getFromResourceDirectory("web") ~ pathSingleSlash {
       get {
-        // Page context
         val context: Map[String, Any] = Map(
-          "title" -> "Presidents",
+          "title" -> "US presidents",
           "presidents" -> List(
-            Map("firstName" -> "Bill", "lastName"   -> "Clinton"),
-            Map("firstName" -> "George", "lastName" -> "Bush"),
-            Map("firstName" -> "Barack", "lastName" -> "Obama"),
-            Map("firstName" -> "Donald", "lastName" -> "Trump")
+            Map("number" -> "45", "firstName" -> "Donald", "lastName" -> "Trump"),
+            Map("number" -> "44", "firstName" -> "Barack", "lastName" -> "Obama"),
+            Map("number" -> "43", "firstName" -> "George", "lastName" -> "Bush Jr."),
+            Map("number" -> "42", "firstName" -> "Bill", "lastName"   -> "Clinton"),
+            Map("number" -> "41", "firstName" -> "George", "lastName" -> "Bush")
           )
         )
-        getRenderedResult("index", context)
+        renderPage("index", context)
       }
     }
 
@@ -79,5 +81,6 @@ final class HttpService(address: String, port: Int) extends Actor with ActorLogg
       log.info(
         s"Server is successfully listening at: ${serverAddress.getHostName}:${serverAddress.getPort}"
       )
+    case Failure(cause) => log.error(cause, "Failed to start server!")
   }
 }
