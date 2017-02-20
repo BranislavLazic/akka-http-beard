@@ -20,7 +20,7 @@ import akka.actor.ActorSystem
 
 object Boot {
   def main(args: Array[String]): Unit = {
-    val system  = ActorSystem()
+    val system  = ActorSystem("akka-http-beard")
     val config  = system.settings.config
     val address = config.getString("http.address")
     val port    = config.getInt("http.port")
